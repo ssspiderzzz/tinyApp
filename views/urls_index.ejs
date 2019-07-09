@@ -8,6 +8,32 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>TinyApp</title>
 </head>
+<style>
+  .button {
+    background-color: white;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+  }
+  .button1 {
+    background-color: white; 
+    color: red; 
+    border: 2px solid red;
+  }
+  .button2 {
+    background-color: white; 
+    color: #008CBA; 
+    border: 2px solid #008CBA;
+  }
+  </style>
+
 <body>
 <% include partials/_header %>
   <main style="margin: 1em;">
@@ -17,13 +43,17 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
         </tr>
       </thead>
       <tbody>
-        <% for(let url in urls) { %>
+        <% for(let shortURL in urls) { %>
           <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= shortURL %></td>
+            <td><%= urls[shortURL] %></td>
+            <td><form method="POST" action="/urls/<%= shortURL %>/edit"><button class="button button2" type = "submit">Edit</button></form></td>
+            <td><form method="POST" action="/urls/<%= shortURL %>/delete"><button class="button button1" type = "submit">Delete</button></form></td>
           </tr>
         <% } %>
       </tbody>

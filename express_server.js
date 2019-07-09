@@ -25,12 +25,6 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
-app.post("/urls", (req, res) => {
-  let shortRandom = generateRandomString();
-  urlDatabase[shortRandom] = req.body.longURL;
-  console.log(req.body);  // Log the POST request body to the console
-  res.redirect(`/urls/${shortRandom}`);
-});
 
 app.get("/hello", (req, res) => {
   let templateVars = { greeting: "Hello World" };
@@ -51,6 +45,28 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+
+app.post("/urls", (req, res) => {
+  let shortRandom = generateRandomString();
+  urlDatabase[shortRandom] = req.body.longURL;
+  console.log(req.body);  // Log the POST request body to the console
+  res.redirect(`/urls/${shortRandom}`);
+});
+
+app.post("/urls/:shortURL/delete", (req,res) =>{
+  delete urlDatabase[req.params.shortURL];
+  res.redirect("/urls");
+});
+
+app.post("/urls/:shortURL/edit", (req,res) =>{
+  res.redirect(`/urls/${req.params.shortURL}`);
+});
+
+app.post("/urls/:shortURL/update", (req,res) =>{
+  urlDatabase[req.params.shortURL] = req.body.newLongURL;
+  res.redirect(`/urls/`);
+});
+
 const generateRandomString = function() {
   let result = "";
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -63,5 +79,4 @@ const generateRandomString = function() {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
 
