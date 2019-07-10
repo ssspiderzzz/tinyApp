@@ -9,6 +9,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser")
 
@@ -27,7 +40,6 @@ app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase, username: req.cookies.username};
   res.render("urls_index", templateVars);
 });
-
 
 app.get("/hello", (req, res) => {
   let templateVars = { greeting: "Hello World" };
@@ -48,6 +60,12 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/register", (req, res) => {
+  let templateVars = {username: req.cookies.username};
+  res.render("register", templateVars);
+});
+
+// POST POST POST POST POST POST POST POST POST POST POST
 
 app.post("/urls", (req, res) => {
   let shortRandom = generateRandomString();
@@ -79,6 +97,16 @@ app.post('/logout',(req,res)=>{
   res.clearCookie('username');
   res.redirect('/urls')
 })
+
+app.post("/register", (req, res) => {
+  user[req.cookies.username] = {
+    id: req.cookies.username,
+    email: req.params.email,
+    password: req.params.password
+  }
+  console.log(user[req.cookies.username])
+  res.redirect("/register");
+});
 
 const generateRandomString = function() {
   let result = "";
