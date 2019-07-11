@@ -1,4 +1,6 @@
 <header>
+    <div class="row">
+    <div class="col align-self-start">
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -8,31 +10,28 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-          
+          </div>
         </div>
 
-      <% if (!username) { %>
-        <div class="row">
-          <div class="col-md-4 offset-md-6">
-              <td><form method="POST" action="/register"><button class="btn btn-outline-dark" type = "submit">Register</button></form><
-    <form class="form-inline" action="/login" method="POST">
-      <div class="form-group mb-2">
-        <input class="form-control" type="text" name="username" placeholder="username" style="width: 300px; margin: 0.5em">
-        <button type="submit" class="btn btn-outline-dark">Log in</button></div></form>
-      </div>
-    </div>
+
+      <% if (!user_id) { %>
+
+        <div class="col align-self-center"></div>
+        <form action="/login"><button type="submit" class="btn btn-outline-dark" style="margin: 0.5em">Login</button></form>
+        <form action="/register"><button class="btn btn-outline-dark" type = "submit" style="margin: 0.5em">Register</button></form>
+
         <% } else { %>
-          <div class="row">
-            <div class="col-md-4 offset-md-11">
+          
+          <div class="col align-self-center"></div>
           <form class="form-inline" action="/logout" method="POST">
             <div class="form-group mb-2">
-             <div style="margin: 0.5em">Logged In As: <%= username %>!</div>
-              <button type="submit" class="btn btn-outline-dark">Logout</button></div></form>
-            </div>
-          </div>
-    
+             <div style="margin: 0.5em">Logged In As: <%= user_id %></div>
+              <button type="submit" class="btn btn-outline-dark">Logout</button></div>
+            </form>
+          
       <% } %>
 
+    </div>
     </div>
   </nav>
 </header>
