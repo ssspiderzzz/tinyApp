@@ -23,14 +23,16 @@
         </tr>
       </thead>
       <tbody>
+      <% if (user_id) { %>
         <% for(let shortURL in urls) { %>
           <tr>
             <td><%= shortURL %></td>
-            <td><%= urls[shortURL] %></td>
+            <td><%= urls[shortURL].longURL %></td>
             <td><form method="POST" action="/urls/<%= shortURL %>/edit"><button class="btn btn-outline-primary" type = "submit">Edit</button></form></td>
             <td><form method="POST" action="/urls/<%= shortURL %>/delete"><button class="btn btn-outline-danger" type = "submit">Delete</button></form></td>
           </tr>
         <% } %>
+      <% } %>
       </tbody>
     </table>
   </main>
