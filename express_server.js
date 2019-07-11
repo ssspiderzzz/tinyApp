@@ -1,6 +1,14 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser")
+const bcrypt = require('bcrypt');
+
+//let hashedPassword = bcrypt.hashSync(password, 10);
+
+app.use(cookieParser())
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
@@ -22,12 +30,6 @@ let users = {
   }
 }
 
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser")
-
-app.use(cookieParser())
-app.use(bodyParser.urlencoded({extended: true}));
-
 // app.get("/", (req, res) => {
 //   res.send("Hello!");
 // });
@@ -43,7 +45,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get("/urls", (req, res) => {
   let templateVars = { urls: urlsForUser(req.cookies.user_id), user_id: req.cookies.user_id};
-  console.log(urlsForUser(req.cookies.user_id))
   res.render("urls_index", templateVars);
 });
 
@@ -58,11 +59,6 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  console.log('test1')
-  console.log(req.params.shortURL)
-  console.log('test2')
-  console.log(urlDatabase[req.params.shortURL].longURL)
-  // let directLongURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
@@ -110,7 +106,7 @@ app.post("/login",(req, res) => {
   const loginUser = findUser(req.body.email, req.body.password);
   if (loginUser === false) {
     console.log(`error 403 sent`)
-    res.status(403);
+    res.status(403).send('Error 403 email address or password is incorrect!');
     res.redirect("/login");
   }
   res.cookie("user_id", loginUser);
@@ -125,22 +121,22 @@ app.post('/logout',(req,res)=>{
 app.post("/register", (req, res) => {
   if (req.body.email === "" || req.body.password === "") {
     console.log(`error 400 sent`)
-    res.status(400);
+    res.status(400).send('Error 400 email address or password cannot be blank!');
     res.redirect("/register");
   }
   if (!findEmail(req.body.email)) {
-    console.log(`error 400 sent`)
-    res.status(400);
+    console.log(`error 400 sent`);
+    res.status(400).send('Error 400 email address exists!');
     res.redirect("/register");
   }
   const regID = generateRandomString();
+  let hashedPassword = bcrypt.hashSync(req.body.password, 10);
   users[`${regID}`] = {
     id: `${regID}`,
     email: req.body.email,
-    password: req.body.password
+    password: hashedPassword
   }
   res.cookie("user_id", `${regID}`);
-  console.log(users[`${regID}`]);
   res.redirect("/urls");
 });
 
@@ -153,10 +149,10 @@ const generateRandomString = function() {
   return result;
 };
 
-const findUser = function(email, password) {
+const findUser = function(email, inputPassword) {
   for (let eachUser in users) {
     if (users[eachUser].email === email) {
-      if(users[eachUser].password === password) {
+      if(bcrypt.compareSync(inputPassword, users[eachUser].password)) {
         return eachUser;
       }
     }
@@ -176,9 +172,7 @@ const findEmail = function(email) {
 const urlsForUser = function(id) {
   let urlDatabyuser = {};
   for (let keys in urlDatabase) {
-    console.log(`testing keys in urlsforuser function: \n ${keys}`)
     if (urlDatabase[keys].userID === id) {
-      console.log('test')
       urlDatabyuser[keys] = urlDatabase[keys];
     } 
   }
